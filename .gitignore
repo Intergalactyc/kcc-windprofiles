@@ -5,6 +5,8 @@ __pycache__/
 dist/
 build/
 
+figs/
+
 venv/
 .venv/
 venv*/
