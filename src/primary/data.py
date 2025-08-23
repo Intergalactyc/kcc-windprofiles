@@ -1,23 +1,30 @@
 from windprofiles import MetTower, Boom
 import os
 import pandas as pd
+from definitions import LOCATION, SOURCE_TIMEZONE, SOURCE_UNITS
 
-
-def load_data(parent: str, outer_merges: bool = False):
-    # Read in the data from the booms and set column names to common format
+def _get_boom_objects() -> list[Boom]:
     boom1 = Boom(1, 6., "m",)
-    
-    boom1.add_data(pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    boom2 = Boom(2, 10., "m")
+    boom3 = Boom(3, 20., "m")
+    boom4 = Boom(4, 32., "m")
+    boom5 = Boom(5, 80., "m")
+    boom6 = Boom(6, 106., "m")
+    boom7 = Boom(7, 106., "m")
+    return [boom1, boom2, boom3, boom4, boom5, boom6, boom7]
+
+def _read_csvs_to_dfs(parent) -> list[pd.DataFrame]:
+    df1 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
         columns={
             "TimeStamp": "time",
-            "MeanVelocity (m/s)": "ws_1",
-            "MeanDirection": "wd_1",
-            "MeanTemperature (C )": "t_1",
-            "MeanPressure (mmHg)": "p_1",
+            "MeanVelocity (m/s)": "ws",
+            "MeanDirection": "wd",
+            "MeanTemperature (C )": "t",
+            "MeanPressure (mmHg)": "p",
         }
-    ))
+    )
 
-    boom2 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df2 = pd.read_csv(os.path.join(parent, "Boom2OneMin")).rename(
         columns={
             "TIMESTAMP": "time",
             "MeanVelocity (m/s)": "ws_2",
@@ -27,7 +34,7 @@ def load_data(parent: str, outer_merges: bool = False):
         }
     )
 
-    boom3 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df3 = pd.read_csv(os.path.join(parent, "Boom3OneMin")).rename(
         columns={
             "TIMESTAMP": "time",
             "MeanVelocity (m/s)": "ws_3",
@@ -35,7 +42,7 @@ def load_data(parent: str, outer_merges: bool = False):
         }
     )
 
-    boom4 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df4 = pd.read_csv(os.path.join(parent, "Boom4OneMin")).rename(
         columns={
             "TimeStamp": "time",
             "MeanVelocity": "ws_4",
@@ -45,7 +52,7 @@ def load_data(parent: str, outer_merges: bool = False):
         }
     )
 
-    boom5 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df5 = pd.read_csv(os.path.join(parent, "Boom5OneMin")).rename(
         columns={
             "TimeStamp": "time",
             "MeanVelocity": "ws_5",
@@ -55,7 +62,7 @@ def load_data(parent: str, outer_merges: bool = False):
         }
     )
 
-    boom6 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df6 = pd.read_csv(os.path.join(parent, "Boom6OneMin")).rename(
         columns={
             "TIMESTAMP": "time",
             "MeanVelocity (m/s)": "ws_6a",
@@ -65,7 +72,7 @@ def load_data(parent: str, outer_merges: bool = False):
         }
     )
 
-    boom7 = pd.read_csv(os.path.join(parent, "Boom1OneMin")).rename(
+    df7 = pd.read_csv(os.path.join(parent, "Boom7OneMin")).rename(
         columns={
             "TimeStamp": "time",
             "MeanVelocity (m/s)": "ws_6b",
@@ -73,3 +80,15 @@ def load_data(parent: str, outer_merges: bool = False):
             "MeanPressure (mmHg)": "p_6",
         }
     )
+
+    return [df1, df2, df3, df4, df5, df6, df7]
+
+def load_data(parent: str) -> MetTower:
+    booms = _get_boom_objects()
+    dfs = _read_csvs_to_dfs(parent)
+
+    for df, boom in zip(booms, dfs):
+        boom.add_data(df, units = SOURCE_UNITS, timezone = SOURCE_TIMEZONE)
+
+    tower = MetTower(location = LOCATION, booms = booms)
+    return tower
