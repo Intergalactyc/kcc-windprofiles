@@ -1,83 +1,36 @@
+from windprofiles.gis.raster import Raster
 from common.config import parse
-from common.definitions import LOCATION
+from common.definitions import LOCATION, TOWER_HEIGHT, TERRAIN_WINDOW_WIDTH_DEGREES
 import os
-import rasterio
-import rasterio.mask
-import numpy as np
-from shapely.geometry import Point
-# import geopandas as gpd
-from pyproj import Transformer
 
+DEM_FILENAMES = ["USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif", "USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif"]
 
-def elevation_stats(dem_path, lat, lon, radius_m):
-    """
-    Calculate elevation statistics within a buffer around a lat/lon point.
-    
-    Parameters:
-        dem_path (str): Path to DEM GeoTIFF.
-        lat (float): Latitude of the point.
-        lon (float): Longitude of the point.
-        radius_m (float): Buffer radius in meters (assumes DEM CRS uses meters).
-    
-    Returns:
-        dict: Dictionary with min, max, mean, std of elevation values.
-    """
-    # Open DEM
-    with rasterio.open(dem_path) as src:
-        dem_crs = src.crs
-        nodata = src.nodata
-        
-        # Reproject point from WGS84 to DEM CRS
-        transformer = Transformer.from_crs("EPSG:4326", dem_crs, always_xy=True)
-        x, y = transformer.transform(lon, lat)
-        
-        # Create buffer geometry
-        point = Point(x, y)
-        buffer_geom = point.buffer(radius_m)
-        
-        # Mask the DEM with the buffer
-        out_image, _ = rasterio.mask.mask(src, [buffer_geom], crop=True)
-        data = out_image[0]
-        
-    # Remove nodata
-    if nodata is not None:
-        valid_data = data[data != nodata]
-    else:
-        valid_data = data[~np.isnan(data)]
-    
-    if valid_data.size == 0:
-        return {
-            "min": None,
-            "max": None,
-            "mean": None,
-            "std": None
-        }
-    
-    return {
-        "min": float(np.min(valid_data)),
-        "max": float(np.max(valid_data)),
-        "mean": float(np.mean(valid_data)),
-        "std": float(np.std(valid_data))
-    }
-
+# Angles for terrain classifications, in degrees CCW of E (rather than CW of N, so the centers effectively swap)
+OPEN_START = 315 - TERRAIN_WINDOW_WIDTH_DEGREES/2
+OPEN_END = 315 + TERRAIN_WINDOW_WIDTH_DEGREES/2
+COMPLEX_START = 135 - TERRAIN_WINDOW_WIDTH_DEGREES/2
+COMPLEX_END = 135 + TERRAIN_WINDOW_WIDTH_DEGREES/2
 
 def main():
     args = parse()
     data_directory = args["dem"]
-    dem_file = os.path.join(data_directory, "USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif")
-    latitude = LOCATION.latitude
-    longitude = LOCATION.longitude
-    radius = 106*1.3
-    print(elevation_stats(dem_file, latitude, longitude, radius))
+    dem_filepaths = [os.path.join(data_directory, f) for f in DEM_FILENAMES]
+    dem = Raster.from_files(dem_filepaths)
 
+    circle_1d3x = dem.circular_region_around(*LOCATION.coords, radius=1.3*TOWER_HEIGHT)
+    stats_circle = dem.stats_in_region(circle_1d3x)
+    print(stats_circle)
+
+    open_terrain_5x = dem.circular_region_around(*LOCATION.coords, radius=5*TOWER_HEIGHT, sector_start=OPEN_START, sector_end=OPEN_END)
+    stats_open_5x = dem.stats_in_region(open_terrain_5x)
+    print(stats_open_5x)
+
+    complex_terrain_5x = dem.circular_region_around(*LOCATION.coords, radius=5*TOWER_HEIGHT, sector_start=COMPLEX_START, sector_end=OPEN_END)
+    stats_complex_5x = dem.stats_in_region(complex_terrain_5x)
+    print(stats_complex_5x)
+
+    # Next need to fit plane in the 1d3x circle, determine its angle, and find max deviations from that plane in the different sectors at 5, 10, 20x radius
+    # https://dlbargh.ir/mbayat/46.pdf
 
 if __name__ == "__main__":
     main()
-    # dem_file = "your_dem.tif"  # Replace with your DEM file path
-    # latitude = 35.123
-    # longitude = -101.456
-    # radius = 500  # meters
-    
-    # stats = elevation_stats(dem_file, latitude, longitude, radius)
-    # print(f"Elevation stats within {radius} m of ({latitude}, {longitude}):")
-    # print(stats)

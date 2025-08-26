@@ -18,6 +18,10 @@ SOURCE_UNITS = {
         "wd" : "degCW-W",
 }
 
+TOWER_HEIGHT = 106.
+
+TERRAIN_WINDOW_WIDTH_DEGREES = 60.
+
 if __name__ == "__main__":
     from windprofiles.meteostat import get_weather_data
     from datetime import datetime
