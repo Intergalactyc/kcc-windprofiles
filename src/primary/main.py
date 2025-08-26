@@ -1,4 +1,4 @@
-from config import parse
+from ..config import parse
 
 def main():
     args = parse()

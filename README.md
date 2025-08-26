@@ -1,5 +1,5 @@
 # KCC wind profiles analysis
-Author: Elliott Walker
+Author: Elliott Walker (Texas Tech University)
 
 Repository with code for study of wind profiles based on data at the 106-meter meteorological tower at Kirkwood Community College in Cedar Rapids, Iowa. The core package used in this analysis is [windprofiles](https://github.com/Intergalactyc/windprofiles).
 
@@ -17,3 +17,12 @@ Run `python src/primary/main.py` to perform the primary analysis. This will (re)
 
 ### Secondary analysis and figure generation (from processed data)
 The contents of `outputs` are the data products generated in the primary analysis. Run `python src/secondary/main.py` for further analysis and figure generation. Figures will be placed in a `figs` directory (which will be created if it does not exist).
+
+### Supplementary analysis
+
+## Data Sources
+Met tower data: Kirkland Community College 106-meter meteorological tower
+
+DEM lidar elevation raster: [USGS](https://apps.nationalmap.gov/downloader/#/?z=8&y=41.82408393116087&x=-93.54911804199266&basemap=usgs_topo&datasets=elevation-products-three-dep&layerIds=one-meter-dem) ([Iowa Geospatial Data Clearinghouse](https://geodata.iowa.gov/pages/lidar))
+- [USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif](https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/IA_EasternIA_2019_B19/TIFF/USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif) ([metadata](https://www.sciencebase.gov/catalog/item/6369f1bad34ed907bf6a2934))
+- [USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif](https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/IA_EasternIA_2019_B19/TIFF/USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif) ([metadata](https://www.sciencebase.gov/catalog/item/6369f1b9d34ed907bf6a2932))
