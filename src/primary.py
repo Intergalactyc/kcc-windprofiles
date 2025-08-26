@@ -1,4 +1,5 @@
-from ..config import parse
+from common.config import parse
+from primary_.data import load_data
 
 def main():
     args = parse()

@@ -1,4 +1,5 @@
-from ..config import parse
+from common.config import parse
+from common.definitions import LOCATION
 import os
 import rasterio
 import rasterio.mask
@@ -63,6 +64,11 @@ def elevation_stats(dem_path, lat, lon, radius_m):
 def main():
     args = parse()
     data_directory = args["dem"]
+    dem_file = os.path.join(data_directory, "USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif")
+    latitude = LOCATION.latitude
+    longitude = LOCATION.longitude
+    radius = 106*1.3
+    print(elevation_stats(dem_file, latitude, longitude, radius))
 
 
 if __name__ == "__main__":
