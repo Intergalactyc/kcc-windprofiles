@@ -61,10 +61,18 @@ TERRAIN_CLASSIFIER = TerrainClassifier(
 )
 
 # All heights (in m) that data exists at
-# Data columns follow '{type}_{boom}' format
+# Data columns follow "{type}_{boom}" format
 HEIGHT_LIST = [6., 10., 20., 32., 80., 106.]
 BOOM_LIST = [1, 2, 3, 4, 5, 6]
 HEIGHTS = {b : h for b, h in zip(BOOM_LIST, HEIGHT_LIST)}
+
+CID_UNITS = {
+        "p" : "mBar_247asl",
+        "t" : "C",
+        "rh" : "%",
+        "ws" : "mph",
+        "wd" : ["degrees", "N", "CW"],
+}
 
 if __name__ == "__main__":
     from windprofiles.meteostat import get_weather_data

@@ -7,11 +7,13 @@ import windprofiles.process.format as fmt
 import windprofiles.process.sampling as sampling
 import windprofiles.process.compute as compute
 import os
+import pathlib
 from definitions import *
 from config import parse
 
 
-SAVEDIR = os.path.join(os.path.abspath(__file__), "../results/processed")
+SAVEDIR = pathlib.Path(__file__).parent.parent.joinpath("results/processed")
+print(SAVEDIR)
 
 
 def load_data(data_directory: str) -> pd.DataFrame:
@@ -119,7 +121,7 @@ def load_cid_data(data_path: str) -> pd.DataFrame:
         pd.to_datetime(cid["time"]).dt.tz_localize("UTC").dt.tz_convert(LOCATION.timezone)
     )
     cid = units.convert_dataframe_units(
-        cid, from_units=CID_UNITS, gravity=LOCATION.g, silent=True
+        cid, from_units=CID_UNITS, gravity=LOCATION.g
     )
     cid = fmt.correct_directions(
         cid
