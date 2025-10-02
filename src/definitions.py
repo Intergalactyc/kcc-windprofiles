@@ -26,6 +26,8 @@ TOWER_HEIGHT = 106.
 
 TERRAIN_WINDOW_WIDTH_DEGREES = 60.
 
+TERRAIN_BOOM = 2
+
 REMOVAL_PERIODS = {
     (
         "2018-03-05 13:20:00",
@@ -55,9 +57,9 @@ STABILITY_CLASSIFIER = StabilityClassifier(
 TERRAIN_CLASSIFIER = TerrainClassifier(
     complexCenter=315,
     openCenter=135,
-    radius=60/2,
+    radius=TERRAIN_WINDOW_WIDTH_DEGREES/2,
     inclusive=True,
-    boom=2,
+    boom=TERRAIN_BOOM,
 )
 
 # All heights (in m) that data exists at
