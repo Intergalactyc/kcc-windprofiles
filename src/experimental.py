@@ -1,6 +1,6 @@
+from config import parse
 from windprofiles.gis.raster import Raster
-from common.config import parse
-from common.definitions import LOCATION, TOWER_HEIGHT, TERRAIN_WINDOW_WIDTH_DEGREES
+from definitions import LOCATION, TOWER_HEIGHT, TERRAIN_WINDOW_WIDTH_DEGREES
 import os
 
 DEM_FILENAMES = ["USGS_1M_15_x61y465_IA_EasternIA_2019_B19.tif", "USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif"]
@@ -11,7 +11,7 @@ OPEN_END = 315 + TERRAIN_WINDOW_WIDTH_DEGREES/2
 COMPLEX_START = 135 - TERRAIN_WINDOW_WIDTH_DEGREES/2
 COMPLEX_END = 135 + TERRAIN_WINDOW_WIDTH_DEGREES/2
 
-def main():
+def elevation_stats():
     args = parse()
     data_directory = args["dem"]
     dem_filepaths = [os.path.join(data_directory, f) for f in DEM_FILENAMES]
@@ -29,8 +29,8 @@ def main():
     stats_complex_5x = dem.stats_in_region(complex_terrain_5x)
     print(stats_complex_5x)
 
-    # Next need to fit plane in the 1d3x circle, determine its angle, and find max deviations from that plane in the different sectors at 5, 10, 20x radius
+    # Next want to fit plane in the 1d3x circle, determine its angle, and find max deviations from that plane in the different sectors at 5, 10, 20x radius
     # https://dlbargh.ir/mbayat/46.pdf
 
 if __name__ == "__main__":
-    main()
+    elevation_stats()

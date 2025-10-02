@@ -11,7 +11,7 @@ Download or clone this repository onto your device. Make sure you have Python in
 As it currently stands, this analysis does not require any API keys (so nothing should need to be configured for `windprofiles`).
 
 ### Primary analysis (from raw data)
-This assumes that you have the raw meteorological tower data (seven files, `Boom1OneMin.csv` through `Boom7OneMin.csv`) in a directory somewhere on your local machine. Copy the `config_TEMPLATE.ini` file and rename the copy `config.ini`. In this file, change the data path to point to that directory.
+This assumes that you have the raw meteorological tower data (seven files, `Boom1OneMin.csv` through `Boom7OneMin.csv`) in a directory somewhere on your local machine. Copy the `config_TEMPLATE.ini` file and rename the copy `config.ini`. In this file, change the `data` path to point to that directory. You also need the corresponding CID airport weather data (included in this repository), change the `cid` path in the config file to point to this file.
 
 Run `python src/primary/main.py` to perform the primary analysis. This will (re)generate basic data products in the `outputs` directory.
 
@@ -22,6 +22,8 @@ The contents of `outputs` are the data products generated in the primary analysi
 
 ## Data Sources
 Met tower data: Kirkland Community College 106-meter meteorological tower
+
+CID data: [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/request/download.phtml?network=IA_ASOS), copy of specific data included in repository
 
 DEM lidar elevation raster: [USGS](https://apps.nationalmap.gov/downloader/#/?z=8&y=41.82408393116087&x=-93.54911804199266&basemap=usgs_topo&datasets=elevation-products-three-dep&layerIds=one-meter-dem) ([Iowa Geospatial Data Clearinghouse](https://geodata.iowa.gov/pages/lidar))
 - [USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif](https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/IA_EasternIA_2019_B19/TIFF/USGS_1M_15_x61y464_IA_EasternIA_2019_B19.tif) ([metadata](https://www.sciencebase.gov/catalog/item/6369f1bad34ed907bf6a2934))
